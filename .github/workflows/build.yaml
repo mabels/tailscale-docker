@@ -1,0 +1,59 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        include:
+          - platform: ['self-hosted', 'linux', 'ARM64']
+            dockerfile: packaged/Dockerfile.arm64
+            tag: v1.1.0
+
+          - platform: ['self-hosted', 'linux', 'ARM32']
+            dockerfile: packaged/Dockerfile.arm32
+            tag: v1.1.0
+
+          - platform: ['self-hosted', 'linux', 'X86']
+            dockerfile: packaged/Dockerfile.amd64
+            tag: v1.1.0
+
+          - platform: ['self-hosted', 'linux', 'ARM64']
+            dockerfile: fromsource/Dockerfile.arm64
+            tag: v1.1.0
+
+          - platform: ['self-hosted', 'linux', 'ARM32']
+            dockerfile: fromsource/Dockerfile.arm32
+            tag: v1.1.0
+
+          - platform: ['self-hosted', 'linux', 'X86']
+            dockerfile: fromsource/Dockerfile.amd6
+            tag: v1.1.0
+
+    name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker Container ${{ matrix.platform }}
+        run: |
+          docker build --build-arg TAG=${{ matrix.tag }} \
+            -t fastandfearless/tailscale:$(dirname \
+            ${{ matrix.dockerfile}})-${{ matrix.tag }}
+
+      # - env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   name: Build Docker for ${{ matrix.os }}
+      #   if: ${{ matrix.platform == 'ubuntu-latest' }}
+      #   run: |
+      #     echo $GITHUB_TOKEN | docker login docker.pkg.github.com/ -u mabels --password-stdin
+      #     GITCOMMIT=$(git rev-parse --short HEAD)
+      #     echo Docker build $GITCOMMIT
+      #     docker build . --tag neckless/${{ matrix.bin_name }}:$GITCOMMIT
+      #     docker tag neckless/${{ matrix.bin_name }}:$GITCOMMIT docker.pkg.github.com/mabels/neckless/neckless:$GITCOMMIT-amd64
+      #     docker push docker.pkg.github.com/mabels/neckless/neckless:$GITCOMMIT-amd64
