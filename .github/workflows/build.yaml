@@ -16,9 +16,9 @@ jobs:
 #           dockerfile: packaged/Dockerfile.arm64v8
 #           tag: v1.2.5
 
-          - platform: ['self-hosted', 'linux', 'ARM32']
-            dockerfile: packaged/Dockerfile.arm32v7
-            tag: v1.2.5
+#         - platform: ['self-hosted', 'linux', 'ARM32']
+#           dockerfile: packaged/Dockerfile.arm32v7
+#           tag: v1.2.5
 
           - platform: ['self-hosted', 'linux', 'X86']
             dockerfile: packaged/Dockerfile.amd64
@@ -28,13 +28,13 @@ jobs:
 #           dockerfile: fromsource/Dockerfile.arm64v8
 #           tag: v1.2.5
 
-          - platform: ['self-hosted', 'linux', 'ARM32']
-            dockerfile: fromsource/Dockerfile.arm32v7
-            tag: v1.2.5
+#         - platform: ['self-hosted', 'linux', 'ARM32']
+#           dockerfile: fromsource/Dockerfile.arm32v7
+#           tag: v1.2.5
 
-          - platform: ['self-hosted', 'linux', 'X86']
-            dockerfile: fromsource/Dockerfile.amd64
-            tag: v1.2.5
+#         - platform: ['self-hosted', 'linux', 'X86']
+#           dockerfile: fromsource/Dockerfile.amd64
+#           tag: v1.2.5
 
     name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
     steps:
