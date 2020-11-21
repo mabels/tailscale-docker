@@ -20,7 +20,7 @@
 #
 #     $ docker exec tailscaled tailscale status
 
-FROM --platform=linux/amd64 debian:buster 
+FROM --platform=linux/arm32v7 debian:buster 
 
 RUN apt update && apt install -y curl gpg
 
@@ -30,5 +30,5 @@ RUN apt update
 RUN apt upgrade -y 
 RUN apt install -y tailscale
 
-CMD [ "sh" ]
+CMD [ "tailscaled" ]
 
