@@ -42,8 +42,8 @@ jobs:
 
       - name: Build Docker Container ${{ matrix.platform }}
         run: |
-          docker build --build-arg TAG=${{ matrix.tag }} \
-            -t fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${{ matrix.tag }} \
+          podman build --build-arg TAG=${{ matrix.tag }} \
+            -t fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')-${{ matrix.tag }} \
             -f ${{ matrix.dockerfile}} .
 
       # - env:
