@@ -12,15 +12,15 @@ jobs:
     strategy:
       matrix:
         include:
-#        - platform: ['self-hosted', 'linux', 'ARM64']
-#          dockerfile: packaged/Dockerfile.arm64v8
-#          tag: v1.2.5
+        - platform: ['self-hosted', 'linux', 'ARM64']
+          dockerfile: packaged/Dockerfile.arm64v8
+          tag: v1.2.5
 
-#        - platform: ['self-hosted', 'linux', 'ARM32']
-#          dockerfile: packaged/Dockerfile.arm32v7
-#          tag: v1.2.5
+        - platform: ['self-hosted', 'linux', 'ARM32']
+          dockerfile: packaged/Dockerfile.arm32v7
+          tag: v1.2.5
 
-         - platform: ['self-hosted', 'Linux', 'X86']
+         - platform: ['self-hosted', 'Linux', 'X64']
            dockerfile: packaged/Dockerfile.amd64
            tag: v1.2.5
 
