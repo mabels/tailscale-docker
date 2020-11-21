@@ -44,7 +44,7 @@ jobs:
         run: |
           docker build --build-arg TAG=${{ matrix.tag }} \
             -t fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${{ matrix.tag }} \
-            -f ${{ matrix.dockerfile} .
+            -f ${{ matrix.dockerfile}} .
 
       # - env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
