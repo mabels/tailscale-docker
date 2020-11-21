@@ -19,8 +19,9 @@
 # To see status:
 #
 #     $ docker exec tailscaled tailscale status
+#
 
-FROM --platform=linux/arm64v8 debian:buster 
+FROM --platform=linux/arm64/v8 debian:buster 
 
 RUN apt update && apt install -y curl gpg
 
