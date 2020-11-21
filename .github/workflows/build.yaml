@@ -20,9 +20,9 @@ jobs:
           dockerfile: packaged/Dockerfile.arm32v7
           tag: v1.2.5
 
-         - platform: ['self-hosted', 'Linux', 'X64']
-           dockerfile: packaged/Dockerfile.amd64
-           tag: v1.2.5
+        - platform: ['self-hosted', 'Linux', 'X64']
+          dockerfile: packaged/Dockerfile.amd64
+          tag: v1.2.5
 
 #         - platform: ['self-hosted', 'linux', 'ARM64']
 #           dockerfile: fromsource/Dockerfile.arm64v8
