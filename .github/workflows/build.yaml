@@ -42,9 +42,14 @@ jobs:
 
       - name: Build Docker Container ${{ matrix.platform }}
         run: |
-          podman build --build-arg TAG=${{ matrix.tag }} \
-            -t fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')-${{ matrix.tag }} \
-            -f ${{ matrix.dockerfile}} .
+          GITVER=$(git rev-parse --short HEAD)
+          ARCH=$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')
+          TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${{ matrix.tag }}-${GITVER}
+          docker build --build-arg TAG=${{ matrix.tag }} -t $TAG -f ${{ matrix.dockerfile}} .
+          neckless kv ls --onlyValue DOCKER_PASSWORD | \
+            docker login index.docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
+          docker tag index.docker.io/$TAG $TAG
+          docker push index.docker.io/$TAG
 
       # - env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
