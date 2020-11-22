@@ -49,7 +49,7 @@ jobs:
           TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${{ matrix.tag }}-${GITVER}
           docker build --build-arg TAG=${{ matrix.tag }} -t $TAG -f ${{ matrix.dockerfile}} .
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
-            docker login index.docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
-          docker tag index.docker.io/$TAG $TAG
-          docker push index.docker.io/$TAG
+            docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
+          docker tag docker.io/$TAG $TAG
+          docker push docker.io/$TAG
 
