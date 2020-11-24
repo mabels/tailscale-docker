@@ -23,38 +23,38 @@ jobs:
           export DOCKER_CONFIG=$HOME/.docker
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
-          echo "image: fastandfearless/tailscale:latest" >> .build.manifest-latest.yaml
+          echo "image: docker.io/fastandfearless/tailscale:latest" >> .build.manifest-latest.yaml
           echo "manifests:" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: amd64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           manifest-tool push from-spec .build.manifest-latest.yaml
-          echo "image: fastandfearless/tailscale:packaged-latest" >> .build.manifest-latest.yaml
+          echo "image: docker.io/fastandfearless/tailscale:packaged-latest" >> .build.manifest-latest.yaml
           echo "manifests:" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: amd64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
