@@ -26,17 +26,17 @@ jobs:
           echo "image: docker.io/fastandfearless/tailscale:latest" >> .build.manifest-latest.yaml
           echo "manifests:" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm64v8-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm32v7-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-amd64-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: amd64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
@@ -44,17 +44,17 @@ jobs:
           echo "image: docker.io/fastandfearless/tailscale:packaged-latest" >> .build.manifest-latest.yaml
           echo "manifests:" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm64v8-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm32v7-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: arm" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-$TAG" >> .build.manifest-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-amd64-$TAG" >> .build.manifest-latest.yaml
           echo "    platform:" >> .build.manifest-latest.yaml
           echo "      architecture: amd64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
