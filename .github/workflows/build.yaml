@@ -16,12 +16,13 @@ jobs:
 
       - name: Write Manifest
         env:
-          DOCKERHUB: ${{ secrets.DOCKERHUB }}
+          NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
         run: |
           GITVER=$(git rev-parse --short HEAD)
           TAG=v1.2.8-${GITVER}
           export DOCKER_CONFIG=$HOME/.docker
-          echo $DOCKERHUB | docker login -u fastandfearless --password-stdin
+          neckless kv ls --onlyValue DOCKER_PASSWORD | \
+            docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
           echo "image: fastandfearless/tailscale:latest" >> .build.manifest-latest.yaml
           echo "manifests:" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
