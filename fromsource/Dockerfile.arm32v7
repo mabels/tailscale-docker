@@ -42,3 +42,4 @@ FROM alpine:3.12
 RUN apk add --no-cache ca-certificates iptables iproute2
 COPY --from=build-env /go/bin/* /usr/local/bin/
 
+CMD ["tailscaled"]

@@ -10,7 +10,9 @@ jobs:
   update-manifest:
     runs-on: ['self-hosted', 'linux', 'X64']
     name: Update-Manifest
-    needs: docker-build
+    needs:
+      - docker-build
+      - fromsource-build
     steps:
       - uses: actions/checkout@v2
 
@@ -19,7 +21,7 @@ jobs:
           NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
         run: |
           GITVER=$(git rev-parse --short HEAD)
-          TAG=v1.2.8-${GITVER}
+          TAG=v1.2.10-${GITVER}
           export DOCKER_CONFIG=$HOME/.docker
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
@@ -41,24 +43,42 @@ jobs:
           echo "      architecture: amd64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           manifest-tool push from-spec .build.manifest-latest.yaml
-          echo "image: docker.io/fastandfearless/tailscale:packaged-latest" >> .build.manifest-latest.yaml
-          echo "manifests:" >> .build.manifest-latest.yaml
-          echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm64v8-$TAG" >> .build.manifest-latest.yaml
-          echo "    platform:" >> .build.manifest-latest.yaml
-          echo "      architecture: arm64" >> .build.manifest-latest.yaml
-          echo "      os: linux" >> .build.manifest-latest.yaml
-          echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm32v7-$TAG" >> .build.manifest-latest.yaml
-          echo "    platform:" >> .build.manifest-latest.yaml
-          echo "      architecture: arm" >> .build.manifest-latest.yaml
-          echo "      os: linux" >> .build.manifest-latest.yaml
-          echo "  -" >> .build.manifest-latest.yaml
-          echo "    image: docker.io/fastandfearless/tailscale:packaged-amd64-$TAG" >> .build.manifest-latest.yaml
-          echo "    platform:" >> .build.manifest-latest.yaml
-          echo "      architecture: amd64" >> .build.manifest-latest.yaml
-          echo "      os: linux" >> .build.manifest-latest.yaml
-          manifest-tool push from-spec .build.manifest-latest.yaml
+          echo "image: docker.io/fastandfearless/tailscale:packaged-latest" >> .build.manifest-packaged-latest.yaml
+          echo "manifests:" >> .build.manifest-packaged-latest.yaml
+          echo "  -" >> .build.manifest-packaged-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm64v8-$TAG" >> .build.manifest-packaged-latest.yaml
+          echo "    platform:" >> .build.manifest-packaged-latest.yaml
+          echo "      architecture: arm64" >> .build.manifest-packaged-latest.yaml
+          echo "      os: linux" >> .build.manifest-packaged-latest.yaml
+          echo "  -" >> .build.manifest-packaged-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-arm32v7-$TAG" >> .build.manifest-packaged-latest.yaml
+          echo "    platform:" >> .build.manifest-packaged-latest.yaml
+          echo "      architecture: arm" >> .build.manifest-packaged-latest.yaml
+          echo "      os: linux" >> .build.manifest-packaged-latest.yaml
+          echo "  -" >> .build.manifest-packaged-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:packaged-amd64-$TAG" >> .build.manifest-packaged-latest.yaml
+          echo "    platform:" >> .build.manifest-packaged-latest.yaml
+          echo "      architecture: amd64" >> .build.manifest-packaged-latest.yaml
+          echo "      os: linux" >> .build.manifest-packaged-latest.yaml
+          manifest-tool push from-spec .build.manifest-packaged-latest.yaml
+          echo "image: docker.io/fastandfearless/tailscale:fromsource-latest" >> .build.manifest-fromsource-latest.yaml
+          echo "manifests:" >> .build.manifest-fromsource-latest.yaml
+          echo "  -" >> .build.manifest-fromsource-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:fromsource-arm64v8-$TAG" >> .build.manifest-fromsource-latest.yaml
+          echo "    platform:" >> .build.manifest-fromsource-latest.yaml
+          echo "      architecture: arm64" >> .build.manifest-fromsource-latest.yaml
+          echo "      os: linux" >> .build.manifest-fromsource-latest.yaml
+          echo "  -" >> .build.manifest-fromsource-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:fromsource-arm32v7-$TAG" >> .build.manifest-fromsource-latest.yaml
+          echo "    platform:" >> .build.manifest-fromsource-latest.yaml
+          echo "      architecture: arm" >> .build.manifest-fromsource-latest.yaml
+          echo "      os: linux" >> .build.manifest-fromsource-latest.yaml
+          echo "  -" >> .build.manifest-fromsource-latest.yaml
+          echo "    image: docker.io/fastandfearless/tailscale:fromsource-amd64-$TAG" >> .build.manifest-fromsource-latest.yaml
+          echo "    platform:" >> .build.manifest-fromsource-latest.yaml
+          echo "      architecture: amd64" >> .build.manifest-fromsource-latest.yaml
+          echo "      os: linux" >> .build.manifest-fromsource-latest.yaml
+          manifest-tool push from-spec .build.manifest-fromsource-latest.yaml
 
   docker-build:
     runs-on: ${{ matrix.platform }}
@@ -67,15 +87,15 @@ jobs:
         include:
         - platform: ['self-hosted', 'linux', 'ARM64']
           dockerfile: packaged/Dockerfile.arm64v8
-          tag: v1.2.8
+          tag: v1.2.10
 
         - platform: ['self-hosted', 'linux', 'ARM']
           dockerfile: packaged/Dockerfile.arm32v7
-          tag: v1.2.8
+          tag: v1.2.10
 
         - platform: ['self-hosted', 'Linux', 'X64']
           dockerfile: packaged/Dockerfile.amd64
-          tag: v1.2.8
+          tag: v1.2.10
 
     name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
     steps:
@@ -89,6 +109,40 @@ jobs:
           ARCH=$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')
           TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${{ matrix.tag }}-${GITVER}
           docker build --build-arg TAG=${{ matrix.tag }} -t $TAG -f ${{ matrix.dockerfile}} .
+          neckless kv ls --onlyValue DOCKER_PASSWORD | \
+            docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
+          docker tag docker.io/$TAG $TAG
+          docker push docker.io/$TAG
+
+  fromsource-build:
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        include:
+        - platform: ['self-hosted', 'linux', 'ARM64']
+          dockerfile: fromsource/Dockerfile.arm64v8
+          tag: v1.2.10
+
+        - platform: ['self-hosted', 'linux', 'ARM']
+          dockerfile: fromsource/Dockerfile.arm32v7
+          tag: v1.2.10
+
+        - platform: ['self-hosted', 'Linux', 'X64']
+          dockerfile: fromsource/Dockerfile.amd64
+          tag: v1.2.10
+
+    name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker Container ${{ matrix.platform }}
+        env:
+          NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
+        run: |
+          GITVER=$(git rev-parse --short HEAD)
+          ARCH=$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')
+          TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${{ matrix.tag }}-${GITVER}
+          docker build --build-arg VERSION=${{matrix.tag}} TAG=${{ matrix.tag }} -t $TAG -f ${{ matrix.dockerfile}} .
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
           docker tag docker.io/$TAG $TAG
