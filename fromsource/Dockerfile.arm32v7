@@ -22,7 +22,7 @@
 #
 
 
-FROM golang:1.15-alpine AS build-env
+FROM golang:alpine3.12 AS build-env
 
 WORKDIR /go/src/tailscale
 
