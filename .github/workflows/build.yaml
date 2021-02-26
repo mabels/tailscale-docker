@@ -21,7 +21,7 @@ jobs:
           NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
         run: |
           GITVER=$(git rev-parse --short HEAD)
-          TAG=v1.4.2-${GITVER}
+          TAG=v1.4.5-${GITVER}
           export DOCKER_CONFIG=$HOME/.docker
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
@@ -87,15 +87,15 @@ jobs:
         include:
         - platform: ['self-hosted', 'linux', 'ARM64']
           dockerfile: packaged/Dockerfile.arm64v8
-          tag: v1.4.2
+          tag: v1.4.5
 
         - platform: ['self-hosted', 'linux', 'ARM']
           dockerfile: packaged/Dockerfile.arm32v7
-          tag: v1.4.2
+          tag: v1.4.5
 
         - platform: ['self-hosted', 'Linux', 'X64']
           dockerfile: packaged/Dockerfile.amd64
-          tag: v1.4.2
+          tag: v1.4.5
 
     name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
     steps:
@@ -121,15 +121,15 @@ jobs:
         include:
         - platform: ['self-hosted', 'linux', 'ARM64']
           dockerfile: fromsource/Dockerfile.arm64v8
-          tag: v1.4.2
+          tag: v1.4.5
 
         - platform: ['self-hosted', 'linux', 'ARM']
           dockerfile: fromsource/Dockerfile.arm32v7
-          tag: v1.4.2
+          tag: v1.4.5
 
         - platform: ['self-hosted', 'Linux', 'X64']
           dockerfile: fromsource/Dockerfile.amd64
-          tag: v1.4.2
+          tag: v1.4.5
 
     name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
     steps:
