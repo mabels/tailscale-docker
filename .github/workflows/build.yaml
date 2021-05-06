@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ '**' ]
+  schedule:
+    - cron: "3 3 * * *"
 
 jobs:
   prepare:
@@ -111,6 +113,7 @@ jobs:
 
   docker-build:
     runs-on: ${{ matrix.platform }}
+    needs: prepare
     strategy:
       matrix:
         include:
@@ -149,6 +152,7 @@ jobs:
 
   fromsource-build:
     runs-on: ${{ matrix.platform }}
+    needs: prepare
     strategy:
       matrix:
         include:
