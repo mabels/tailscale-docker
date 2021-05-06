@@ -17,7 +17,7 @@ jobs:
         env:
           NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
         run: |
-	  rm -f .build_versions
+          rm -f .build_versions
           npm install
           npm run --silent query tailscale/tailscale >> .build_versions
           cat .build_versions
