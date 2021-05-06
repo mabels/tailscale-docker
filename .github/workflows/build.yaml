@@ -7,6 +7,28 @@ on:
     branches: [ '**' ]
 
 jobs:
+  prepare:
+    name: Prepare Versions
+    runs-on: ['self-hosted', 'Linux']
+    steps:
+      - uses: actions/checkout@v2
+
+      - shell: bash
+        env:
+          NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
+        run: |
+	  rm -f .build_versions
+          npm install
+          npm run --silent query tailscale/tailscale >> .build_versions
+          cat .build_versions
+          tar cf prepare.tar .build_versions
+
+      - name: Upload prepare.tar
+        uses: actions/upload-artifact@v1
+        with:
+          name: prepare.tar
+          path: prepare.tar
+
   update-manifest:
     runs-on: ['self-hosted', 'linux', 'X64']
     name: Update-Manifest
@@ -16,12 +38,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: extract prepare.tar
+        uses: actions/download-artifact@v1
+        with:
+          name: prepare.tar
+
       - name: Write Manifest
         env:
           NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
         run: |
+          tar xf prepare.tar/prepare.tar
+          eval $(cat .build_versions)
+          TAG=$TAILSCALE_TAILSCALE_VERSION
           GITVER=$(git rev-parse --short HEAD)
-          TAG=v1.6.0-${GITVER}
           export DOCKER_CONFIG=$HOME/.docker
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
@@ -87,28 +116,32 @@ jobs:
         include:
         - platform: ['self-hosted', 'linux', 'ARM64']
           dockerfile: packaged/Dockerfile.arm64v8
-          tag: v1.6.0
 
         - platform: ['self-hosted', 'linux', 'ARM']
           dockerfile: packaged/Dockerfile.arm32v7
-          tag: v1.6.0
 
         - platform: ['self-hosted', 'Linux', 'X64']
           dockerfile: packaged/Dockerfile.amd64
-          tag: v1.6.0
 
     name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
     steps:
       - uses: actions/checkout@v2
 
+      - name: extract prepare.tar
+        uses: actions/download-artifact@v1
+        with:
+          name: prepare.tar
+
       - name: Build Docker Container ${{ matrix.platform }}
         env:
           NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
         run: |
+          tar xf prepare.tar/prepare.tar
+          eval $(cat .build_versions)
           GITVER=$(git rev-parse --short HEAD)
           ARCH=$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')
-          TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${{ matrix.tag }}-${GITVER}
-          docker build --build-arg TAG=${{ matrix.tag }} -t $TAG -f ${{ matrix.dockerfile}} .
+          TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${TAILSCALE_TAILSCALE_VERSION}-${GITVER}
+          docker build --build-arg TAG=${TAG} -t $TAG -f ${{ matrix.dockerfile}} .
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
           docker tag docker.io/$TAG $TAG
@@ -121,29 +154,34 @@ jobs:
         include:
         - platform: ['self-hosted', 'linux', 'ARM64']
           dockerfile: fromsource/Dockerfile.arm64v8
-          tag: v1.6.0
 
         - platform: ['self-hosted', 'linux', 'ARM']
           dockerfile: fromsource/Dockerfile.arm32v7
-          tag: v1.6.0
 
         - platform: ['self-hosted', 'Linux', 'X64']
           dockerfile: fromsource/Dockerfile.amd64
-          tag: v1.6.0
 
     name: Build ${{ matrix.platform }} ${{ matrix.dockerfile }}
     steps:
       - uses: actions/checkout@v2
 
+      - name: extract prepare.tar
+        uses: actions/download-artifact@v1
+        with:
+          name: prepare.tar
+
       - name: Build Docker Container ${{ matrix.platform }}
         env:
           NECKLESS_PRIVKEY: ${{ secrets.NECKLESS_PRIVKEY }}
         run: |
+          tar xf prepare.tar/prepare.tar
+          eval $(cat .build_versions)
           GITVER=$(git rev-parse --short HEAD)
           ARCH=$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')
-          TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${{ matrix.tag }}-${GITVER}
+          TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${TAILSCALE_TAILSCALE_VERSION}-${GITVER}
           docker build --build-arg VERSION=${{matrix.tag}} -t $TAG -f ${{ matrix.dockerfile}} .
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
           docker tag docker.io/$TAG $TAG
           docker push docker.io/$TAG
+
