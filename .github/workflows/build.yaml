@@ -144,7 +144,7 @@ jobs:
           GITVER=$(git rev-parse --short HEAD)
           ARCH=$(echo ${{ matrix.dockerfile}} | sed 's/.*\.\([^\.][^\.]*\)$/\1/')
           TAG=fastandfearless/tailscale:$(dirname ${{ matrix.dockerfile}})-${ARCH}-${TAILSCALE_TAILSCALE_VERSION}-${GITVER}
-          docker build --build-arg TAG=${TAG} -t $TAG -f ${{ matrix.dockerfile}} .
+          docker build --build-arg TAG=${TAILSCALE_TAILSCALE_VERSION} -t $TAG -f ${{ matrix.dockerfile}} .
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
           docker tag docker.io/$TAG $TAG
