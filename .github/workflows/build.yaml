@@ -53,10 +53,11 @@ jobs:
           eval $(cat .build_versions)
           GITVER=$(git rev-parse --short HEAD)
           TAG=${TAILSCALE_TAILSCALE_VERSION}-${GITVER}
+          echo $TAG
           export DOCKER_CONFIG=$HOME/.docker
           neckless kv ls --onlyValue DOCKER_PASSWORD | \
             docker login docker.io -u $(neckless kv ls --onlyValue DOCKER_USER) --password-stdin
-          echo "image: docker.io/fastandfearless/tailscale:latest" >> .build.manifest-latest.yaml
+          echo "image: docker.io/fastandfearless/tailscale:latest" > .build.manifest-latest.yaml
           echo "manifests:" >> .build.manifest-latest.yaml
           echo "  -" >> .build.manifest-latest.yaml
           echo "    image: docker.io/fastandfearless/tailscale:packaged-arm64v8-$TAG" >> .build.manifest-latest.yaml
@@ -74,7 +75,7 @@ jobs:
           echo "      architecture: amd64" >> .build.manifest-latest.yaml
           echo "      os: linux" >> .build.manifest-latest.yaml
           manifest-tool push from-spec .build.manifest-latest.yaml
-          echo "image: docker.io/fastandfearless/tailscale:packaged-latest" >> .build.manifest-packaged-latest.yaml
+          echo "image: docker.io/fastandfearless/tailscale:packaged-latest" > .build.manifest-packaged-latest.yaml
           echo "manifests:" >> .build.manifest-packaged-latest.yaml
           echo "  -" >> .build.manifest-packaged-latest.yaml
           echo "    image: docker.io/fastandfearless/tailscale:packaged-arm64v8-$TAG" >> .build.manifest-packaged-latest.yaml
@@ -92,7 +93,7 @@ jobs:
           echo "      architecture: amd64" >> .build.manifest-packaged-latest.yaml
           echo "      os: linux" >> .build.manifest-packaged-latest.yaml
           manifest-tool push from-spec .build.manifest-packaged-latest.yaml
-          echo "image: docker.io/fastandfearless/tailscale:fromsource-latest" >> .build.manifest-fromsource-latest.yaml
+          echo "image: docker.io/fastandfearless/tailscale:fromsource-latest" > .build.manifest-fromsource-latest.yaml
           echo "manifests:" >> .build.manifest-fromsource-latest.yaml
           echo "  -" >> .build.manifest-fromsource-latest.yaml
           echo "    image: docker.io/fastandfearless/tailscale:fromsource-arm64v8-$TAG" >> .build.manifest-fromsource-latest.yaml
