@@ -22,6 +22,7 @@ jobs:
           rm -f .build_versions
           npm install
           npm run --silent latest tailscale/tailscale >> .build_versions
+          cat .build_versions
           tar cf prepare.tar .build_versions
 
       - name: Upload prepare.tar
